@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: dim_time
+    description: "A date dimension with one row per day, and columns for various date parts"
+    columns:
+      - name: date_day
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_stations
+    description: "A dimension with one row per station, and columns for station attributes" 
+    columns:
+      - name: station_id
+        data_tests:
+          - unique
+          - not_null
