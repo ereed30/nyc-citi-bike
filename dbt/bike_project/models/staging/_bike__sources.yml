@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: bikes                     # logical name you'll use in {{ source(...) }}
+    database: citi_bike     # ← your MotherDuck database name (the bit after "md:")
+    schema: raw                    # ← change if your raw table isn't in `main`
+    description: "Raw bike trip data ingested from S3"
+    tables:
+      - name: trips_test              # ← actual raw table name in MotherDuck
+        description: "One row per bike trip"

@@ -1,0 +1,38 @@
+
+version: 2
+
+models:
+  - name: stg_bikes__trips
+    description: "One row per Hudson Bike Share trip, typed and renamed"
+    columns:
+      - name: ride_id
+        description: "Unique identifier for the ride"
+        data_tests:
+          - unique
+          - not_null
+      - name: started_at
+        description: "Trip start timestamp"
+        data_tests:
+          - not_null
+      - name: ended_at
+        description: "Trip end timestamp"
+        data_tests:
+          - not_null
+      - name: ride_duration_seconds
+        description: "Length of the ride in seconds (ended_at - started_at)"
+      - name: rider_type
+        description: "member or casual"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['member', 'casual']
+      - name: bike_type
+        description: "classic_bike or electric_bike"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['classic_bike', 'electric_bike']
+      - name: source_period
+        description: "Ingestion partition (e.g. APR_2026)"
+        data_tests:
+          - not_null
