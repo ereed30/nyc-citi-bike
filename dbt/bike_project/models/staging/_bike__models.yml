@@ -33,6 +33,12 @@ models:
               arguments:
                 values: ['classic_bike', 'electric_bike']
       - name: source_period
-        description: "Ingestion partition (e.g. APR_2026)"
+        description: "Ingestion partition column, in YYYY-MM-DD format for first day of month"
         data_tests:
           - not_null
+      - name: city
+        description: "NYC or JC data"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Jersey City', 'NYC']

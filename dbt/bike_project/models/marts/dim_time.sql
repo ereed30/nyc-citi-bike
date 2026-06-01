@@ -2,7 +2,7 @@
 
 with date_range as (
 
-    -- One row per day for the last 12 months through today.
+    -- One row per day for the last 12 months
     select
         cast(current_date - interval 12 month as date) + interval (i) day as date_day
     from range(

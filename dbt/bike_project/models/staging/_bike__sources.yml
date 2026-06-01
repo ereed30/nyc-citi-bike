@@ -8,3 +8,5 @@ sources:
     tables:
       - name: trips_test              # ← actual raw table name in MotherDuck
         description: "One row per bike trip"
+      - name: citi_bike_raw              # ← actual raw table name in MotherDuck
+        description: "One row per bike trip"
