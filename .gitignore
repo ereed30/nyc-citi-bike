@@ -50,3 +50,7 @@ dbt_packages/
 logs/
 profiles.yml
 .user.yml
+
+
+#bigQuery
+*.json
