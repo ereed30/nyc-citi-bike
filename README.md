@@ -1,6 +1,6 @@
 # Citibike Analytics Engineering Pipeline
  
-An end-to-end analytics engineering project that ingests 12 months of rolling [Citibike](https://citibikenyc.com/system-data) trip data, lands it in a [MotherDuck](https://motherduck.com/) (DuckDB) warehouse, and transforms it with [dbt](https://www.getdbt.com/) into a star schema ready for analysis and visualization.
+An end-to-end analytics engineering project that ingests 12 months of rolling [Citibike](https://citibikenyc.com/system-data) trip data, lands it in a [Google BigQuery](https://motherduck.com/) warehouse, and transforms it with [dbt](https://www.getdbt.com/) into a star schema ready for analysis and visualization.
  
 The goal of the project is to practice the full modern analytics engineering workflow — extraction, raw ingestion, staging, and dimensional modeling — on a real, reasonably large dataset (~45M rows).
  
@@ -11,7 +11,7 @@ The goal of the project is to practice the full modern analytics engineering wor
 ```mermaid
 flowchart LR
     A[AWS S3<br/>Citibike public buckets] -->|Jupyter + Python| B[Raw extract<br/>monthly partitions]
-    B -->|Python ingest| C[(MotherDuck / DuckDB<br/>raw.citibike_trips<br/>~45M rows)]
+    B -->|Python ingest| C[(BigQuery<br/>raw.citibike_trips<br/>~45M rows)]
     C -->|dbt staging| D[stg_citibike_trips<br/>typed + derived fields]
     D -->|dbt marts| E[Star schema<br/>fact + dim tables]
     E -->|BI tool| F[Dashboards &<br/>visualizations]
@@ -139,37 +139,13 @@ erDiagram
 ### Prerequisites
  
 - Python 3.10+
-- A [MotherDuck](https://motherduck.com/) account and access token
-- dbt with the DuckDB adapter
-### Setup
- 
-```bash
-# Clone and install dependencies
-git clone <your-repo-url>
-cd <your-repo>
-pip install -r requirements.txt
- 
-# Set your MotherDuck token
-export motherduck_token="<your-token>"
-```
- 
-### Run the pipeline
- 
-```bash
-# 1–2. Extract from S3 and ingest into MotherDuck
-jupyter notebook notebooks/extract_ingest.ipynb
- 
-# 3–4. Build staging + marts
-cd citibike_dbt
-dbt deps
-dbt build        # runs + tests all models
-```
- 
----
+- A BigQuery project setup and key file generated
+- dbt with the BigQuery adapter
+
+
  
 ## Notes & Future Work
  
-
 - Add dbt tests (uniqueness, not-null, relationships) and source freshness checks.
 - Orchestrate the extract → ingest → transform flow (e.g. with a scheduler or GitHub Actions).
 - Build the visualization layer on top of the star schema.
