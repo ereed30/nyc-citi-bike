@@ -22,10 +22,10 @@ flowchart LR
 | Layer | Tool |
 |---|---|
 | Extraction | Python, Jupyter Notebook, `boto3` / `s3fs` |
-| Storage / Warehouse | DuckDB on MotherDuck |
-| Transformation | dbt (dbt-duckdb adapter) |
+| Storage / Warehouse | Google BigQuery |
+| Transformation | dbt |
 | Modeling | Dimensional / star schema |
-| Visualization | _(your BI tool — e.g. Evidence, Metabase, Tableau, Power BI)_ |
+| Visualization | Prepped for Looker Studio and Power BI |
  
 ---
  
@@ -37,19 +37,30 @@ A Python script in a Jupyter notebook pulls a rolling 12 months of Citibike trip
  
 > Note: Citibike publishes its trip data in public S3 buckets. No AWS credentials are required to read public objects, but `boto3`/`s3fs` still need to be configured for unsigned/anonymous access.
  
-### 2. Ingest — Land raw data in MotherDuck
+### 2. Ingest — Land raw data in Google BigQuery
  
-The extracted partitions are loaded into a single raw table in a MotherDuck-hosted DuckDB database directly from Python. Alongside the trip columns, the ingest captures **partition metadata** (e.g. location (NYC vs JC) and the year/month the partition represents) so that lineage back to the original file is preserved.
+The extracted partitions are loaded into a single raw table in BigQuery directly from Python. Alongside the trip columns, the ingest captures **partition metadata** (e.g. location (NYC vs JC) and the year/month the partition represents) so that lineage back to the original file is preserved.
  
 The result is one consolidated raw table of roughly **45M rows**:
  
 ```
 raw.citibike_trips
 ```
+
+> Note: **This is intentionally not a production-grade ingestion
+pattern** — at scale, the right approach is loading CSVs directly from S3
+or GCS into BigQuery using the native load API, which parses and ingests
+server-side without holding data in local memory.  
+>
+> The pandas-based approach was chosen here to demonstrate:
+> - Working with the AWS S3 API via `boto3`
+> - Streaming and unpacking zipped CSVs in memory
+> - Filtering and shaping data with `pandas`
+> - Authenticating to and writing data into BigQuery via a service account
  
 ### 3. Stage — Type and clean with dbt
  
-`dbt init` scaffolds a dbt project connected to the MotherDuck raw table. A staging model reads from `raw.citibike_trips` and:
+`dbt init` scaffolds a dbt project connected to the BigQuery raw table. A staging model reads from `raw.citi_bike_trips` and:
  
 - Casts every column to an explicit, well-defined data type
 - Standardizes / renames fields into a consistent naming convention
@@ -158,10 +169,11 @@ dbt build        # runs + tests all models
  
 ## Notes & Future Work
  
-- Parameterize the rolling 12-month window so the pipeline can be re-run on a schedule.
+
 - Add dbt tests (uniqueness, not-null, relationships) and source freshness checks.
 - Orchestrate the extract → ingest → transform flow (e.g. with a scheduler or GitHub Actions).
 - Build the visualization layer on top of the star schema.
+
 ---
  
 _Personal project — built to practice the modern analytics engineering stack end to end._
