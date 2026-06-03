@@ -1,6 +1,6 @@
 # Citibike Analytics Engineering Pipeline
  
-An end-to-end analytics engineering project that ingests 12 months of rolling [Citibike](https://citibikenyc.com/system-data) trip data, lands it in a [Google BigQuery](https://motherduck.com/) warehouse, and transforms it with [dbt](https://www.getdbt.com/) into a star schema ready for analysis and visualization.
+An end-to-end analytics engineering project that ingests 12 months of rolling [Citibike](https://citibikenyc.com/system-data) trip data, lands it in a [Google BigQuery](https://cloud.google.com/bigquery) warehouse, and transforms it with [dbt](https://www.getdbt.com/) into a star schema ready for analysis and visualization.
  
 The goal of the project is to practice the full modern analytics engineering workflow — extraction, raw ingestion, staging, and dimensional modeling — on a real, reasonably large dataset (~45M rows).
  
@@ -21,7 +21,7 @@ flowchart LR
  
 | Layer | Tool |
 |---|---|
-| Extraction | Python, Jupyter Notebook, `boto3` / `s3fs` |
+| Extraction | Python, Jupyter Notebook, `boto3` |
 | Storage / Warehouse | Google BigQuery |
 | Transformation | dbt |
 | Modeling | Dimensional / star schema |
