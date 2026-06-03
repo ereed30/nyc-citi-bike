@@ -7,7 +7,7 @@ with trips as (
 start_stations as (
 
     select
-        start_station_id   as station_id
+        start_station_id    as station_id
         ,start_station_name as station_name
         ,start_lat          as latitude
         ,start_lng          as longitude
@@ -20,11 +20,11 @@ start_stations as (
 end_stations as (
 
     select
-        end_station_id   as station_id
-        ,end_station_name as station_name
-        ,end_lat          as latitude
-        ,end_lng          as longitude
-        ,ended_at         as observed_at
+        end_station_id      as station_id
+        ,end_station_name   as station_name
+        ,end_lat            as latitude
+        ,end_lng            as longitude
+        ,ended_at           as observed_at
     from trips
     where end_station_id is not null
 
@@ -77,14 +77,10 @@ usage_stats as (
         ,min(observed_at) as first_seen_at
         ,max(observed_at) as last_seen_at
     from (
-        select start_station_id as station_id, 'start' as role, started_at as observed_at
-        from trips
-        where start_station_id is not null
+        select station_id, 'start' as role, observed_at from start_stations
         union all
-        select end_station_id as station_id, 'end' as role, ended_at as observed_at
-        from trips
-        where end_station_id is not null
-    )
+        select station_id, 'end'   as role, observed_at from end_stations
+    ) appearances
     group by station_id
 
 ),
@@ -101,9 +97,9 @@ final as (
         ,u.times_as_end
         ,u.first_seen_at
         ,u.last_seen_at
-    from 
-        geo g
-        left join usage_stats u using (station_id)
+    from geo g
+    left join usage_stats u
+        on g.station_id = u.station_id
 
 )
 
